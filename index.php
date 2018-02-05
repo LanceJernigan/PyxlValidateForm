@@ -194,8 +194,6 @@
         $passes = sizeOf( $errors ) === 0;
                 
 		$ctx[ 'passes' ] = $passes ? 'true' : 'false';
-		
-		print_r( $ctx );
         
         return $passes;
 	};
