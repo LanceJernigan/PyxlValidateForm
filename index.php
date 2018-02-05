@@ -68,10 +68,11 @@
 	};
 
 	$validateZipcode = function( $value, $ctx ) use ( $fetch ) {
+		$api_key = '9TkV38CqACwjavaWuxqarmadAcLCZMPtqBadD8uitljSNM5OiGHzwRV1eHlE98BY';
 		$passes = true;
 		
         $response = $fetch(
-            'https://www.zipcodeapi.com/rest/0C97spJpJjTJjC3XmECVc46dlW5uC64ww2jxpDhQU5N0INyHndY6iz9xb6sBXnGk/distance.json/37912/' . $value . '/miles',
+            'https://www.zipcodeapi.com/rest/' . $api_key . '/distance.json/37912/' . $value . '/miles',
             5
         );
         $distance = $response
@@ -167,7 +168,9 @@
 		]
 	];
     
-    $validateForm = function( $type, $value ) use ( $validator ) {
+    function validateForm( $type, $value ) {
+
+		global $validator;
         
         $funcs = array_key_exists( $type, $validator )
 			?	$validator[ $type ]
@@ -190,10 +193,12 @@
 
         $passes = sizeOf( $errors ) === 0;
                 
-        $ctx[ 'passes' ] = $passes ? 'true' : 'false';
+		$ctx[ 'passes' ] = $passes ? 'true' : 'false';
+		
+		print_r( $ctx );
         
         return $passes;
-    };
+	};
     
     $tests = [
         [
@@ -259,7 +264,7 @@
         $value = $test[ 'value' ];
         $shouldBe = $test[ 'shouldBe' ];
 
-        $valid = $validateForm( $type, $value );
+        $valid = validateForm( $type, $value );
 
         $validString = $valid ? '  ✅  ' : '  🚫  ';
 
