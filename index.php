@@ -68,10 +68,11 @@
 	};
 
 	$validateZipcode = function( $value, $ctx ) use ( $fetch ) {
+		$api_key = '9TkV38CqACwjavaWuxqarmadAcLCZMPtqBadD8uitljSNM5OiGHzwRV1eHlE98BY';
 		$passes = true;
 		
         $response = $fetch(
-            'https://www.zipcodeapi.com/rest/0C97spJpJjTJjC3XmECVc46dlW5uC64ww2jxpDhQU5N0INyHndY6iz9xb6sBXnGk/distance.json/37912/' . $value . '/miles',
+            'https://www.zipcodeapi.com/rest/' . $api_key . '/distance.json/37912/' . $value . '/miles',
             5
         );
         $distance = $response
@@ -167,7 +168,9 @@
 		]
 	];
     
-    $validateForm = function( $type, $value ) use ( $validator ) {
+    function validateForm( $type, $value ) {
+
+		global $validator;
         
         $funcs = array_key_exists( $type, $validator )
 			?	$validator[ $type ]
@@ -190,82 +193,9 @@
 
         $passes = sizeOf( $errors ) === 0;
                 
-        $ctx[ 'passes' ] = $passes ? 'true' : 'false';
+		$ctx[ 'passes' ] = $passes ? 'true' : 'false';
+		
+		print_r( $ctx );
         
         return $passes;
-    };
-    
-    $tests = [
-        [
-            "type" => 'email',
-            "value" => 'jmills@thinkpyxl.com',
-            shouldBe => true,
-        ],
-        [
-            "type" => 'email',
-            "value" => 'jmills@thinkpyxl',
-            shouldBe => false,
-        ],
-        [
-            "type" => 'first',
-            "value" => 'Jerod',
-            shouldBe => true,
-        ],
-        [
-            "type" => 'first',
-            "value" => '',
-            shouldBe => false,
-        ],
-        [
-            "type" => 'last',
-            "value" => 'Mills',
-            shouldBe => true,
-        ],
-        [
-            "type" => 'last',
-            "value" => '',
-            shouldBe => false,
-        ],
-        [
-            "type" => 'zip',
-            "value" => '37902',
-            shouldBe => true,
-        ],
-        [
-            "type" => 'zip',
-            "value" => '00000',
-            shouldBe => false,
-        ],
-        [
-            "type" => 'birthday',
-            "value" => '08/09/1985',
-            shouldBe => true,
-        ],
-        [
-            "type" => 'birthday',
-            "value" => '08/09/2018',
-            shouldBe => false,
-        ],
-    ];
-
-    $results = [
-        'valid | type | value',
-        '-----------------------------------'
-    ];
-
-    for ( $t = 0; $t < sizeOf( $tests ); $t++ ) {
-        $test = $tests[ $t ];
-        $type = $test[ 'type' ];
-        $value = $test[ 'value' ];
-        $shouldBe = $test[ 'shouldBe' ];
-
-        $valid = $validateForm( $type, $value );
-
-        $validString = $valid ? '  ✅  ' : '  🚫  ';
-
-        array_push( $results, $validString . ' | ' . $type . ' | ' . $value );
-    }
-
-    foreach( $results as &$result ) {
-        print( $result . "\r\n" );
-    }
+	};
